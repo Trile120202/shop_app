@@ -22,11 +22,7 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    isSelected: {
-        type: Boolean,
-        default: false,
-    },
-    
+       
     price: {
         type: String,
         required: true,
