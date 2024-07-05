@@ -1,42 +1,18 @@
 const User = require("../models/User");
 
-module.exports = {
-    updateUser: async (req, res) => {
-        if (req.body.password) {
-            req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.SECRET).toString();
-        }
-        try {
-            const updatedUser = await User.findByIdAndUpdate(
-                req.user.id, {
-                $set: req.body
-            }, { new: true });
-            const { password, __v, createdAt, ...others } = updatedUser._doc;
-
-            res.status(200).json({ ...others });
-        } catch (err) {
-            res.status(500).json(err)
-        }
-    },
-
-    deleteUser: async (req, res) => {
-        try {
-            await User.findByIdAndDelete(req.user.id)
-            res.status(200).json("Successfully Deleted")
-        } catch (error) {
-            res.status(500).json(error)
-        }
-    },
-
+const userController = {
     getUser: async (req, res) => {
         try {
             const user = await User.findById(req.user.id);
-            const { password, __v, createdAt, ...userdata } = user._doc;
-            res.status(200).json(userdata)
+            if (!user) {
+                return res.status(404).json("User not found");
+            }
+            const { password, ...others } = user._doc;
+            res.status(200).json(others);
         } catch (error) {
-            res.status(500).json(error)
+            res.status(500).json(error);
         }
-    },
+    }
+};
 
-
-
-}
+module.exports = userController;
